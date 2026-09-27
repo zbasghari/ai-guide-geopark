@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Env / secrets
+.env
+.env.*
+
+# Runtime logs
+*.log
+_startup.log
+backend_run.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Scratch artifacts (keep these out of the deploy)
+_check_*.png
+_v_*.png
+_f_*.png
