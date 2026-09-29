@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
 import re
+import os
+import hashlib
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -11,6 +13,33 @@ import uvicorn
 from config import settings
 from knowledge_base import init_knowledge_base, get_knowledge_base, KnowledgeBase, KnowledgeItem
 from ai_service import init_ai_service, get_ai_service, AIService, ChatResponse
+
+
+def _build_id() -> str:
+    """Stable short hash of the source files, used to detect stale deployments.
+
+    If the running container's /health build_id differs from the value
+    produced at the latest commit, the process is an older build and the
+    service must be redeployed to the newest commit.
+    """
+    h = hashlib.sha256()
+    base = Path(__file__).resolve().parent
+    for name in ("main.py", "config.py", "ai_service.py", "knowledge_base.py"):
+        p = base / name
+        if p.exists():
+            h.update(p.read_bytes())
+    # Include the knowledge + frontend trees so content changes bump the id.
+    for sub in ("knowledge", "frontend"):
+        d = base / sub
+        if d.exists():
+            for f in sorted(d.rglob("*")):
+                if f.is_file():
+                    h.update(str(f.relative_to(base)).encode())
+                    h.update(f.read_bytes())
+    return h.hexdigest()[:12]
+
+
+BUILD_ID = _build_id()
 
 
 # Request/Response models
@@ -28,6 +57,7 @@ class HealthResponse(BaseModel):
     status: str
     knowledge_base_items: int
     ai_provider: str
+    build_id: Optional[str] = None
 
 
 # ---------------------------------------------------------------------------
@@ -269,9 +299,11 @@ async def lifespan(app: FastAPI):
                 print(f"  - {_name}")
         except Exception:
             pass
-        print("If 'knowledge/' is missing here, it was not included in the deploy — check that the folder is committed in git and re-push.")
+        print("If 'knowledge/' is missing here, it was not included in the deploy — make sure the backend/ folder (with knowledge/ and frontend/ inside it) is part of the uploaded files and re-deploy.")
     ai = init_ai_service(kb)
     print(f"AI provider: {settings.ai_provider}")
+    print(f"Frontend dir: {settings.frontend_dir} (exists: {Path(settings.frontend_dir).exists()})")
+    print(f"Build id: {BUILD_ID}  (if /health returns a different build_id than this, the live process is a stale build)")
     yield
     # Shutdown
     await ai.close()
@@ -309,12 +341,18 @@ async def disable_client_caching(request, call_next):
 
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
-    """Health check endpoint."""
+    """Health check endpoint.
+
+    `build_id` is a hash of the running source files — if it differs from
+    the value printed in the server log at startup, the live process is
+    running an older build and the service should be redeployed.
+    """
     kb = get_knowledge_base()
     return HealthResponse(
         status="ok",
         knowledge_base_items=len(kb.get_all()),
         ai_provider=settings.ai_provider,
+        build_id=BUILD_ID,
     )
 
 
@@ -576,7 +614,7 @@ async def timeline():
 
 
 # Serve the frontend (must be mounted after API routes so API wins)
-_FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+_FRONTEND_DIR = Path(settings.frontend_dir)
 if _FRONTEND_DIR.exists():
     app.mount("/", StaticFiles(directory=str(_FRONTEND_DIR), html=True), name="frontend")
     print(f"Frontend mounted from: {_FRONTEND_DIR}")
@@ -589,19 +627,20 @@ else:
         is never a silent 404."""
         from fastapi import Response
         import os as _os
+        base = str(_FRONTEND_DIR.parent)
         listing = []
         try:
-            listing = [n for n in sorted(_os.listdir(str(_FRONTEND_DIR.parent)))]
+            listing = [n for n in sorted(_os.listdir(base))]
         except Exception:
             pass
         html = f"""<html dir="rtl" lang="fa"><head><meta charset="utf-8">
 <title>ژئوپارک — خطای استقرار</title>
 <style>body{{font-family:Tahoma,sans-serif;background:#16130f;color:#efe9df;max-width:760px;margin:60px auto;padding:24px;line-height:2}}
 code{{background:#2e2820;padding:2px 8px;border-radius:6px;font-size:13px}}h2{{color:#c98a3d}}</style></head>
-<body><h2>فایل‌های فرانتاند یافت نشد</h2>
-<p>API کار می‌کند اما پوشهٔ <code>frontend/</code> در محیط استقرار وجود ندارد؛ بنابراین صفحهٔ اصلی قابل نمایش نیست.</p>
-<p>محتویات ریشهٔ سرویس: <code>{', '.join(listing) if listing else '(خالی)'} </code></p>
-<p>برای رفع مشکل، از آنچنان که پوشه‌های <code>knowledge/</code> و <code>frontend/</code> در کنار <code>backend/</code> در مخزن github قرار دارند، مطمئن شوید و دوباره push کنید.</p>
+<body><h2>فایلهای فرانتاند یافت نشد</h2>
+<p>API کار میکند اما پوشهٔ <code>frontend/</code> در کنار <code>backend/</code> وجود ندارد.</p>
+<p>محتویات <code>{base}</code>: <code>{', '.join(listing) if listing else '(خالی)'}</code></p>
+<p>پروژه در ساختار خودمختار <code>backend/frontend</code> و <code>backend/knowledge</code> نگهداری میشود. مطمئن شوید پوشهٔ کامل <code>backend/</code> (شامل <code>knowledge/</code> و <code>frontend/</code> در دل آن) در فایل‌های آپلودشدهٔ Railway وجود دارد، سپس deploy را دوباره اجرا کنید.</p>
 <p>API: <a style="color:#7d8f6a" href="/health">/health</a> · <a style="color:#7d8f6a" href="/api/knowledge">/api/knowledge</a> · <a style="color:#7d8f6a" href="/openapi.json">openapi</a></p>
 </body></html>"""
         return Response(content=html, media_type="text/html")

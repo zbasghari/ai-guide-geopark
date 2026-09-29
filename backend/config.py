@@ -3,10 +3,19 @@ from pathlib import Path
 from typing import Optional
 from pydantic_settings import BaseSettings
 
-# Repo layout: backend/config.py  ->  repo root is one level up.
-# Resolve the knowledge base from this file so the app works regardless of
-# which directory the server is started from (local, Railway, Docker, ...).
-_REPO_ROOT = Path(__file__).resolve().parent.parent
+# Repo layout: backend/config.py.
+# Self-contained layout (deploy-safe): backend/knowledge  and  backend/frontend.
+# Fall back to the old repo-root layout (<root>/knowledge) for compatibility.
+_BACKEND_DIR = Path(__file__).resolve().parent
+_REPO_ROOT = _BACKEND_DIR.parent
+
+
+def _find_dir(name: str) -> Path:
+    candidates = [_BACKEND_DIR / name, _REPO_ROOT / name]
+    for c in candidates:
+        if c.exists():
+            return c
+    return candidates[0]
 
 
 class Settings(BaseSettings):
@@ -28,8 +37,11 @@ class Settings(BaseSettings):
     anthropic_api_key: Optional[str] = None
     anthropic_model: str = "claude-3-haiku-20240307"
 
-    # Knowledge Base (defaults to <repo>/knowledge, overridable via env)
-    knowledge_base_path: str = str(_REPO_ROOT / "knowledge")
+    # Knowledge Base (overridable via env)
+    knowledge_base_path: str = str(_find_dir("knowledge"))
+
+    # Frontend static directory (overridable via env)
+    frontend_dir: str = str(_find_dir("frontend"))
 
     # CORS
     cors_origins: list[str] = ["*"]
