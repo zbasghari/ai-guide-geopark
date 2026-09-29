@@ -70,18 +70,89 @@ function renderCatalog() {
   }
 }
 
+/* Category chips in the hero are real navigation.
+   Each chip opens its OWN dedicated tab view (a separate overlay with its own
+   header + close button), so no two chips lead to the same place:
+   - geosites / attractions / routes / facilities / rules -> a catalog view
+     showing only that category's items
+   - faq -> the FAQ list
+   No page reload; the view opens on top and closes with ✕ / Esc. */
 function renderStats() {
   const host = document.getElementById("hero-stats");
   host.replaceChildren();
   if (state.cats.length) {
     for (const c of state.cats) {
-      const chip = document.createElement("span");
+      const chip = document.createElement("button");
+      chip.type = "button";
       chip.className = "stat-chip";
+      chip.dataset.category = c.key;
       chip.textContent = c.label_fa;
+      chip.addEventListener("click", () => openCategoryTab(c.key));
       host.appendChild(chip);
     }
   }
 }
+
+function openCategoryTab(key) {
+  const label = state.cats.find((c) => c.key === key);
+  const title = label ? label.label_fa : key;
+  const host = document.getElementById("tab-view");
+  host.replaceChildren();
+
+  const head = document.createElement("header");
+  head.className = "tab-view-head";
+  const closeBtn = document.createElement("button");
+  closeBtn.type = "button";
+  closeBtn.className = "tab-view-close";
+  closeBtn.setAttribute("aria-label", "بستن نمای " + title);
+  closeBtn.textContent = "✕";
+  closeBtn.addEventListener("click", closeCategoryTab);
+
+  const h2 = document.createElement("h2");
+  h2.textContent = title;
+  head.appendChild(h2);
+  head.appendChild(closeBtn);
+
+  const body = document.createElement("div");
+  body.className = "tab-view-body";
+
+  if (key === "faq") {
+    body.innerHTML = `<div class="catalog-empty">در حال بارگذاری پرسش‌های متداول…</div>`;
+    API.faq().then((f) => {
+      body.replaceChildren(faqList(f.items || []));
+    }).catch((err) => {
+      body.innerHTML = `<div class="catalog-empty">${esc(err.message)}</div>`;
+    });
+  } else {
+    const items = state.all.filter((i) => i.category === key);
+    const grid = document.createElement("div");
+    grid.className = "catalog";
+    if (items.length) {
+      for (const item of items) grid.appendChild(catalogCard(item));
+    } else {
+      grid.innerHTML = `<div class="catalog-empty">موردی در این بخش از پایگاه دانش موجود نیست.</div>`;
+    }
+    body.appendChild(grid);
+  }
+
+  host.appendChild(head);
+  host.appendChild(body);
+  host.hidden = false;
+  document.body.style.overflow = "hidden";
+  host.scrollTop = 0;
+}
+
+function closeCategoryTab() {
+  const host = document.getElementById("tab-view");
+  host.hidden = true;
+  document.body.style.overflow = "";
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !document.getElementById("tab-view").hidden) {
+    closeCategoryTab();
+  }
+});
 
 /* ---------- filters + recommendation wiring ---------- */
 async function applyFilters() {
