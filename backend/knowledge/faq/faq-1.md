@@ -3,6 +3,10 @@ title: "سوالات متداول"
 id: "faq-1"
 category: "سوالات متداول"
 tags: ["FAQ", "راهنما", "اطلاعات عمومی"]
+image: "images/attractions/soalate_motadavel/soalate_motadavel_1.webp"
+image_thumb: "images/attractions/soalate_motadavel/soalate_motadavel_1_thumb.webp"
+image_source: "عکاسی شخصی کاربر"
+image_license: "private"
 ---
 
 # سوالات متداول (FAQ)

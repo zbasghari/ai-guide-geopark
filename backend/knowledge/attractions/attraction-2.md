@@ -3,21 +3,29 @@ title: "منظره‌گاه سراسرنمای قله"
 id: "attraction-2"
 category: "جاذبه گردشگری"
 tags: ["منظره", "قله", "عکاسی"]
+attraction_category_fa: "طبیعی"
+image: "images/attractions/manzaregah/manzaregah_1.webp"
+image_thumb: "images/attractions/manzaregah/manzaregah_1_thumb.webp"
+image_source: "عکاسی شخصی کاربر"
+image_license: "private"
+gallery:
+  - "images/attractions/manzaregah/manzaregah_1.webp"
+  - "images/attractions/manzaregah/manzaregah_2.webp"
+  - "images/attractions/manzaregah/manzaregah_3.webp"
+  - "images/attractions/manzaregah/manzaregah_4.webp"
+gallery_thumbs:
+  - "images/attractions/manzaregah/manzaregah_1_thumb.webp"
+  - "images/attractions/manzaregah/manzaregah_2_thumb.webp"
+  - "images/attractions/manzaregah/manzaregah_3_thumb.webp"
+  - "images/attractions/manzaregah/manzaregah_4_thumb.webp"
+
 ---
 
 # منظره‌گاه سراسرنمای قله
 
 ## توضیحات
-این منظره‌گاه در بلندترین نقطه‌ی منطقه قرار دارد و دید سراسرنمای ۳۶۰درجه‌ای از مجموعه‌ی ژئوپارک، دامنه‌های کوهستانی و دره‌های رودخانه‌ای را در بر می‌گیرد. این نقطه مکان مناسبی برای عکاسی و استراحت است.
-
-## امکانات
-- صندلی‌های استراحت در مناسب‌ترین نقاط برای دیدن غروب و طلوع آفتاب
-- تابلوهای راهنمای منظره‌ها
-- تلسکوپ بینایی
+- بلندترین نقطه ژئوپارک با دید سراسرنمای ۳۶۰ درجه؛ مناسب عکاسی و تماشای طلوع و غروب از صندلیهای دیدگاه.
 
 ## دسترسی
-- با خودرو تا پارکینگ قله و سپس حدود ۵ دقیقه پیاده‌روی
-- پیاده‌روی از مرکز بازدیدکنندگان تا منظره‌گاه حدود ۴۵ دقیقه طول می‌کشد
+- خودرو تا پارکینگ قله + ۵ دقیقه پیاده‌روی؛ از مرکز بازدید ~۴۵ دقیقه پیاده
 
-## بهترین زمان
-طلوع و غروب آفتاب برای عکاسی مناسب‌ترین زمان است.

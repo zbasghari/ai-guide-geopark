@@ -26,14 +26,22 @@ class Settings(BaseSettings):
     api_reload: bool = False
 
     # AI Model Settings
-    # On hosted platforms Ollama (localhost) is unreachable — the chat falls
-    # back to a knowledge-base answer. For live AI answers, set ai_provider to
-    # "openai" or "anthropic" and the matching *_api_key env var.
+    # ai_provider: "ollama" | "openai" | "anthropic".
+    #   "openai" accepts ANY OpenAI-compatible endpoint via openai_base_url
+    #   (OpenAI, DeepSeek, Groq, Mistral, OpenRouter, a local vLLM/LMStudio, ...).
+    # On hosted platforms Ollama (localhost) is unreachable — the chat then
+    # falls back to a knowledge-base answer. For live AI answers, set
+    # ai_provider to "openai" or "anthropic" plus the matching *_api_key.
     ai_provider: str = "ollama"  # "ollama", "openai", "anthropic"
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3.1:8b"
     openai_api_key: Optional[str] = None
     openai_model: str = "gpt-4o-mini"
+    # OpenAI-compatible base URL. Defaults to the official OpenAI endpoint;
+    # override for other providers, e.g. DeepSeek:
+    #   https://api.deepseek.com/v1   (model: deepseek-chat)
+    #   https://api.groq.com/openai/v1 (model: llama-3.3-70b-versatile)
+    openai_base_url: str = "https://api.openai.com/v1"
     anthropic_api_key: Optional[str] = None
     anthropic_model: str = "claude-3-haiku-20240307"
 

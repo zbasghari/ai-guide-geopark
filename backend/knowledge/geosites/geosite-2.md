@@ -3,27 +3,30 @@ title: "کلیسای سنت استپانوس (قزل وانک)"
 id: "geosite-2"
 category: "ژئوسایت"
 tags: ["کلیسا", "ارمنی", "تاریخی", "جلفا"]
+image: "images/attractions/stefanos_church/stefanos_church_1.webp"
+image_thumb: "images/attractions/stefanos_church/stefanos_church_1_thumb.webp"
+image_source: "عکاسی شخصی کاربر"
+image_license: "private"
+gallery:
+  - "images/attractions/stefanos_church/stefanos_church_1.webp"
+  - "images/attractions/stefanos_church/stefanos_church_2.webp"
+  - "images/attractions/stefanos_church/stefanos_church_3.webp"
+  - "images/attractions/stefanos_church/stefanos_church_4.webp"
+  - "images/attractions/stefanos_church/stefanos_church_5.webp"
+gallery_thumbs:
+  - "images/attractions/stefanos_church/stefanos_church_1_thumb.webp"
+  - "images/attractions/stefanos_church/stefanos_church_2_thumb.webp"
+  - "images/attractions/stefanos_church/stefanos_church_3_thumb.webp"
+  - "images/attractions/stefanos_church/stefanos_church_4_thumb.webp"
+  - "images/attractions/stefanos_church/stefanos_church_5_thumb.webp"
+attraction_category_fa: "ژئوتوریسم"
 ---
 
 # کلیسای سنت استپانوس (قزل وانک)
 
 ## توضیحات
-کلیسای سنت استپانوس، که با نام ارمنی «سورپ استپانوس ونک» و با نام محلی «قزل وانک» یا «صومعه سرخ» شناخته می‌شود، یکی از مهم‌ترین بناهای تاریخی‌مذهبی استان آذربایجان شرقی است. این بنا، پس از قره‌کلیسا، دومین کلیسای مهم ارامنه در ایران به شمار می‌رود و در ۱۵ تا ۱۷ کیلومتری غرب جلفا، در حاشیه رود ارس و در دره‌ای عمیق به نام «دره‌شام» قرار دارد.
-
-## ویژگی‌ها
-- **نام‌ها**: قزل وانک (صومعه سرخ)، سورپ استپانوس ونک
-- **موقعیت**: در ۳ کیلومتری کرانه جنوبی رود ارس، در روستای متروکه دره‌شام
-- **قدمت**: تاریخ ساخت بنا را به قرن نهم میلادی نسبت می‌دهند؛ در دوره صفوی پس از خسارات زلزله بازسازی شد.
-
-## تاریخچه
-نام کلیسا از «استپانوس» (استفانوس)، نخستین شهید مسیحیت گرفته شده است. این بنا در طول تاریخ چندین بار بازسازی و مرمت شده؛ به‌ویژه در دوره صفوی پس از آسیب‌های زلزله. هنگام مرمت، بقایای استخوان قدیسان‌ها در میان دو طاق کلیسا کشف شده است.
-
-## موقعیت جغرافیایی
-در شهرستان جلفا، استان آذربایجان شرقی؛ در حاشیه رود ارس و نزدیک نوار مرزی.
-
-## اهمیت علمی و فرهنگی
-این کلیسا با حصار سنگی و هفت برج نگهبانی، نمونه‌ای از معماری ارمنی در منطقه است. از جاذبه‌های ترکیبی فرهنگی‌طبیعی ژئوپارک جلفا به شمار می‌رود و در مجاورت آن روستای کردشت و رودخانه ارس قرار دارد.
+- یکی از مهم‌ترین کلیساهای ارمنی ایران (قرن ۹، بازسازی صفوی) در ۱۵–۱۷ کیلومتری غرب جلفا، در دره شام؛ با حصار سنگی و هفت برج نگهبانی.
 
 ## دسترسی
-- با خودرو تا جاده مرزی رود ارس (مسیر از هادی‌شهر/علمدار گرگر)
-- سپس پیاده‌روی کوتاه تا محوطه کلیسا
+- خودرو تا جاده مرزی ارس + پیاده‌روی کوتاه تا محوطه
+

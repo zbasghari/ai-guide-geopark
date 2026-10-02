@@ -26,3 +26,6 @@ Thumbs.db
 _check_*.png
 _v_*.png
 _f_*.png
+_*.py
+_*.png
+_*.log

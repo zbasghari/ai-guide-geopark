@@ -43,6 +43,10 @@
 
   <main>
     <section id="hero" class="hero">
+      <svg class="hero-ornament" viewBox="0 0 24 24" width="86" height="86" aria-hidden="true">
+        <path d="M7 4 H17 L21 9 L12 20 L3 9 Z" class="orc-facet"/>
+        <path d="M3 9 H21 M12 4 L9.5 9 L12 20 M12 4 L14.5 9 L12 20" class="orc-line"/>
+      </svg>
       <div class="hero-frame">
         <h1>سفر در لایه‌هایِ زمین</h1>
         <p class="hero-sub">از میلیون‌ها سال پیش تا مسیر قدم‌روی — ژئوسایت‌ها، مسیرهای بازدید، جاذبه‌ها و امکانات، همراه با دستیار هوشمند و توصیه‌های شخصی‌سازی‌شده.</p>
@@ -56,14 +60,14 @@
 
     <section id="explore" class="section">
       <div class="section-head">
-        <h2>کاوش ژئوپارک</h2>
-        <p>همه‌ی محتوا مستقیماً از پایگاه دانش ژئوپارک بارگذاری می‌شود.</p>
+        <h2 data-icon="explore">کاوش ژئوپارک</h2>
+        <p>همه محتوا مستقیماً از پایگاه دانش ژئوپارک بارگذاری می‌شود.</p>
       </div>
       <div class="explore-grid">
-        <aside class="panel glass filters" id="filters" aria-label="فیلترها"></aside>
-        <div class="panel glass" id="recommend-panel" aria-label="توصیه‌های هوشمند"></div>
+        <aside class="panel glass filters" id="filters" aria-label="فیلترها"><div class="sec-loading"><span class="geo-loader" aria-hidden="true"></span><span>در حال بارگذاری فیلترها...</span></div></aside>
+        <div class="panel glass" id="recommend-panel" aria-label="توصیه‌های هوشمند"><div class="sec-loading"><span class="geo-loader" aria-hidden="true"></span><span>در حال دریافت توصیه‌ها...</span></div></div>
       </div>
-      <div id="catalog" class="catalog"></div>
+      <div id="catalog" class="catalog"><div class="sec-loading"><span class="geo-loader" aria-hidden="true"></span><span>در حال بارگذاری پایگاه دانش...</span></div></div>
     </section>
 
     <section id="map-section" class="section">
@@ -71,7 +75,7 @@
         <h2>نقشه‌ی موقعیت</h2>
         <p>چیدمان شماتیک بر اساس توضیحات موقعیت در پایگاه دانش — بدون مختصات جعلی.</p>
       </div>
-      <div id="map-card" class="map-card"></div>
+      <div id="map-card" class="map-card"><div class="sec-loading"><span class="geo-loader" aria-hidden="true"></span><span>در حال ساخت نقشه...</span></div></div>
     </section>
 
     <section id="timeline-section" class="section">
@@ -113,9 +117,10 @@
 
   <div id="modal" class="modal" hidden></div>
 
-  <script src="js/api.js"></script>
-  <script src="js/cards.js"></script>
-  <script src="js/components.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/api.js" defer></script>
+  <script src="js/icons.js" defer></script>
+  <script src="js/cards.js" defer></script>
+  <script src="js/components.js" defer></script>
+  <script src="js/main.js" defer></script>
 </body>
 </html>

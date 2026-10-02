@@ -1,8 +1,12 @@
 ---
-title: "سرویس‌های بهداشتی"
+title: "سرویسهای بهداشتی"
 id: "facility-2"
 category: "امکانات"
 tags: ["سرویس بهداشتی", "معلولین", "آب شرب"]
+image: "images/attractions/service_behdashti/service_behdashti_1.webp"
+image_thumb: "images/attractions/service_behdashti/service_behdashti_1_thumb.webp"
+image_source: "عکاسی شخصی کاربر"
+image_license: "private"
 ---
 
 # سرویس‌های بهداشتی

@@ -1,8 +1,12 @@
 ---
-title: "مسیر آسان خانواده (چرخ‌دار)"
+title: "مسیر آسان خانواده (چرخدار)"
 id: "route-1"
 category: "مسیر بازدید"
-tags: ["آسان", "خانواده", "دسترسی آسان", "چرخ‌دار"]
+tags: ["آسان", "خانواده", "دسترسی آسان", "چرخدار"]
+image: "images/attractions/masire_asane_khanevadeh/masire_asane_khanevadeh_1.webp"
+image_thumb: "images/attractions/masire_asane_khanevadeh/masire_asane_khanevadeh_1_thumb.webp"
+image_source: "عکاسی شخصی کاربر"
+image_license: "private"
 ---
 
 # مسیر آسان خانواده (چرخ‌دار)

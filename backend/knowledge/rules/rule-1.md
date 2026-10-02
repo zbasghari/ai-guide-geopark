@@ -3,6 +3,10 @@ title: "قوانین بازدید ژئوپارک"
 id: "rule-1"
 category: "قوانین"
 tags: ["قوانین", "ایمنی", "محافظت"]
+image: "images/attractions/ghavanine_bazdid/ghavanine_bazdid_1.webp"
+image_thumb: "images/attractions/ghavanine_bazdid/ghavanine_bazdid_1_thumb.webp"
+image_source: "عکاسی شخصی کاربر"
+image_license: "private"
 ---
 
 # قوانین بازدید ژئوپارک

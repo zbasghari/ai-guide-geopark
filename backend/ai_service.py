@@ -106,11 +106,17 @@ class AIService:
         return data.get("message", {}).get("content", "")
     
     async def _call_openai(self, messages: List[Dict[str, str]], model: str) -> str:
-        """Call OpenAI API."""
+        """Call an OpenAI-compatible /chat/completions endpoint.
+
+        Uses `openai_base_url`, so the same code works with OpenAI itself or
+        any compatible provider (DeepSeek, Groq, Mistral, OpenRouter, local
+        vLLM/LMStudio, ...) — just set the base URL + key + model.
+        """
         if not settings.openai_api_key:
             raise ValueError("OpenAI API key not configured")
-        
-        url = "https://api.openai.com/v1/chat/completions"
+
+        base_url = settings.openai_base_url.rstrip("/")
+        url = f"{base_url}/chat/completions"
         headers = {
             "Authorization": f"Bearer {settings.openai_api_key}",
             "Content-Type": "application/json",

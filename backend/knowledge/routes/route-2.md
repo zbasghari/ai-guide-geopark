@@ -2,7 +2,17 @@
 title: "مسیر کوهنوردی گچی قالاسی"
 id: "route-2"
 category: "مسیر بازدید"
-tags: ["کوهنوردی", "گچی قالاسی", "سخت", "طبیعت‌گرا"]
+tags: ["کوهنوردی", "گچی قالاسی", "سخت", "طبیعتگرا"]
+image: "images/attractions/masire_koohnavardi_qechiqalasi/masire_koohnavardi_qechiqalasi_1.webp"
+image_thumb: "images/attractions/masire_koohnavardi_qechiqalasi/masire_koohnavardi_qechiqalasi_1_thumb.webp"
+image_source: "عکاسی شخصی کاربر"
+image_license: "private"
+gallery:
+  - "images/attractions/masire_koohnavardi_qechiqalasi/masire_koohnavardi_qechiqalasi_1.webp"
+  - "images/attractions/masire_koohnavardi_qechiqalasi/masire_koohnavardi_qechiqalasi_2.webp"
+gallery_thumbs:
+  - "images/attractions/masire_koohnavardi_qechiqalasi/masire_koohnavardi_qechiqalasi_1_thumb.webp"
+  - "images/attractions/masire_koohnavardi_qechiqalasi/masire_koohnavardi_qechiqalasi_2_thumb.webp"
 ---
 
 # مسیر کوهنوردی گچی قالاسی

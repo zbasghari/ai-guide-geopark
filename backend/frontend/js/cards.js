@@ -5,14 +5,9 @@
 // Persian-digit helper (shared by counts shown on buttons/filters)
 function faNum(n) { return String(n).replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[d]); }
 
-const CAT_ICON = {
-  geosites: "⛰",
-  attractions: "🏞",
-  routes: "🥾",
-  facilities: "🅿",
-  rules: "⚖",
-  faq: "?",
-};
+// The professional icon system (SVG, meaning-mapped, distinct per topic)
+// lives in icons.js: iconSVG / iconBadge / catIcon / catIconName.
+// (No emoji icons, no duplicate CAT_ICON const here.)
 
 function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({
@@ -29,22 +24,46 @@ function cardShell(category, innerHTML) {
   return el;
 }
 
+/* ---------- card media (cover image) ----------
+   Present when the item carries image frontmatter; absent otherwise, so
+   text-only items (rules, faq, facilities, …) keep their current look. */
+function insertCardMedia(card, item) {
+  const src = item.image_thumb || item.image;
+  if (!src) return;
+  const media = document.createElement("div");
+  media.className = "card-media";
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = item.title || "";
+  img.loading = "lazy";
+  img.decoding = "async";
+  media.appendChild(img);
+  if (item.attraction_category_fa) {
+    const badge = document.createElement("span");
+    badge.className = "media-badge";
+    badge.textContent = item.attraction_category_fa;
+    media.appendChild(badge);
+  }
+  card.insertBefore(media, card.querySelector(".card-body"));
+}
+
 /* ---------- Location Card (base for all place cards) ---------- */
 function locationCard(item, { onOpen = null } = {}) {
   const card = cardShell(item.category, `
-    <span class="card-cat">${esc(CAT_ICON[item.category] || "")} ${esc(item.category_fa || item.category)}</span>
+    <span class="card-cat">${itemIcon(item, { size: 15, cls: "cat-ic" })} ${esc(item.category_fa || item.category)}</span>
     <h3 class="card-title">${esc(item.title)}</h3>
     <p class="card-excerpt">${esc(item.excerpt)}</p>
     <div class="card-tags">${(item.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div>
     <div class="card-footer"></div>
   `);
+  insertCardMedia(card, item);
   const footer = card.querySelector(".card-footer");
 
   if (item.location) {
     const pin = document.createElement("span");
     pin.className = "loc-hint";
-    pin.style.cssText = "font-size:11px;color:var(--ink-soft);flex:1;";
-    pin.textContent = "📍 " + item.location;
+    pin.style.cssText = "font-size:11px;color:var(--ink-soft);flex:1;display:inline-flex;align-items:center;gap:4px;";
+    pin.innerHTML = iconInline("map", 13) + `<span>${esc(item.location)}</span>`;
     footer.appendChild(pin);
   }
 
@@ -177,76 +196,97 @@ function timelineEl(events) {
   return wrap;
 }
 
-/* ---------- Map Card (schematic layout, positions derived from text, not invented coords) ---------- */
+/* ---------- Map Card (schematic layout) ----------
+   Positions come from the MAP_LAYOUT table below: a hand-tuned schematic
+   arrangement derived from the knowledge base's own geography text (e.g. "بر
+   رود ارس در دوزال"، "۱۵–۱۷ کیلومتری غرب جلفا"، "حاشیهٔ جنوبشرقی شهر"، "پشت
+   سد ارس، ۴۰ کیلومتری"). No invented coordinates — just the relative
+   west/center/southeast/northeast layout the texts describe. */
+const MAP_LAYOUT = {
+  "geosite-1":     { x: 24, y: 30, z: "west"  }, // آبشار آسیاب خرابه — حاشیهرود ارس، غرب
+  "geosite-2":     { x: 12, y: 44, z: "west"  }, // کلیسای سنت استپانوس — ۱۵–۱۷ کیلومتری غرب
+  "geosite-3":     { x: 72, y: 62, z: "se"    }, // گچی قالاسی — جنوبشرقی، روستای شجاع
+  "attraction-1":  { x: 48, y: 50, z: "center" }, // مرکز بازدیدکنندگان — داخل شهر
+  "attraction-2":  { x: 60, y: 40, z: "center" }, // منظره‌گاه سراسرنمای قله
+  "attraction-3":  { x: 18, y: 56, z: "west"  }, // کلیسای چوپان — درهٔ غرب جلفا
+  "attraction-4":  { x: 44, y: 36, z: "center" }, // رودخانه ارس — کرانهٔ شهر
+  "attraction-5":  { x: 30, y: 40, z: "west"  }, // کاروانسرای خواجهنظر — جوار پل ضیاءالملک
+  "attraction-6":  { x: 40, y: 58, z: "center" }, // مجموعه کردشت — ساحل جنوبی ارس
+  "attraction-7":  { x: 44, y: 61, z: "center" }, // حمّام کردشت
+  "attraction-8":  { x: 36, y: 64, z: "center" }, // قلعه کردشت — دامنهٔ کنتال
+  "attraction-9":  { x: 22, y: 66, z: "west"  }, // روستای اشتبین — طاقاندازی
+  "attraction-10": { x: 86, y: 26, z: "ne"    }, // برج دوزال — تپهٔ مشرف بر ارس، شرق دور
+  "attraction-11": { x: 52, y: 52, z: "center" }, // کلیساهای تاریخی جلفا — داخل شهر
+  "attraction-12": { x: 30, y: 33, z: "west"  }, // پل ضیاءالملک — بر ارس، غرب
+  "attraction-13": { x: 26, y: 37, z: "west"  }, // پل آهنی (دمیرکورپو) — غرب
+  "attraction-14": { x: 66, y: 14, z: "ne"    }, // آبشار ماهاران — نزدیک هادیشهر/سیهرود
+  "attraction-15": { x: 78, y: 20, z: "ne"    }, // پارک ملی کنتال — بخش سیهرود، جوار مرز
+  "attraction-16": { x: 88, y: 36, z: "ne"    }, // مراکان — شمالشرقی، مرزی
+  "attraction-17": { x: 6,  y: 26, z: "west"  }, // سد ارس — ~۴۰ کیلومتری غرب، بالادست
+  "attraction-18": { x: 74, y: 74, z: "se"    }, // دشت گردیان — ~۵ کیلومتر جنوبشرقی
+  "route-1":       { x: 55, y: 54, z: "center" }, // مسیر آسان خانواده — از داخل شهر، ۲.۵ کیلومتر
+  "route-2":       { x: 64, y: 56, z: "se"    }, // مسیر کوهنوردی گچی قالاسی — از حاشیهٔ جنوبشرقی شهر
+  "facility-1":    { x: 45, y: 54, z: "center" }, // پارکینگ اصلی — شهر
+  "facility-2":    { x: 50, y: 57, z: "center" }, // سرویسهای بهداشتی — شهر
+};
+const MAP_ZONE_STYLE = {
+  west:   { label: "بخش غربی",       box: [3, 40, 34, 36] },
+  center: { label: "شهر و کرانهٔ ارس", box: [32, 44, 32, 28] },
+  se:     { label: "بخش جنوبشرقی",   box: [58, 52, 34, 36] },
+  ne:     { label: "بخش شمالشرقی",   box: [62, 4, 34, 36] },
+};
+
 function mapCard(items, { onOpen = null } = {}) {
-  // Zones derived from the location field text present in the knowledge base.
-  const zoneOf = (loc) => {
-    if (!loc) return null;
-    if (/شمال/.test(loc)) return "north";
-    if (/مکان|مرکز/.test(loc) || /وسط/.test(loc) || /مرکزی/.test(loc)) return "center";
-    if (/جنوب/.test(loc)) return "south";
-    if (/ورودی|پارکینگ/.test(loc)) return "gate";
-    return "center";
-  };
-
-  const ZONE_POS = {
-    north: { x: 46, y: 16 },
-    center: { x: 40, y: 48 },
-    south: { x: 62, y: 84 },
-    gate: { x: 14, y: 56 },
-  };
-  const ZONE_STYLE = {
-    north: { c: "rgba(125,143,106,.35)", d: "60% 40%", label: "بخش شمالی" },
-    center: { c: "rgba(201,138,61,.30)", d: "50% 46%", label: "بخش مرکزی" },
-    south: { c: "rgba(74,85,104,.30)", d: "52% 34%", label: "بخش جنوبی" },
-  };
-
   const root = cardShell(null, `<div class="map-inner"><div class="map-layer"></div></div>`);
   const inner = root.querySelector(".map-inner");
 
-  // zones
-  const zones = new Set(items.map((i) => zoneOf(i.location)).filter(Boolean));
-  for (const z of ["north", "center", "south"]) {
-    if (!zones.has(z)) continue;
+  // river + border backdrop (schematic: the Aras flows east-west, town on the south bank)
+  const river = document.createElement("div");
+  river.className = "map-river";
+  river.innerHTML = `
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M-2 30 C 12 34, 26 31, 40 35 S 70 29, 84 34 S 98 33, 104 30"
+            fill="none" stroke="rgba(63,127,191,0.55)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M-2 34 C 12 38, 26 35, 40 39 S 70 33, 84 38 S 98 37, 104 34"
+            fill="none" stroke="rgba(79,166,216,0.35)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M-2 12 H102" stroke="rgba(109,97,79,0.5)" stroke-width="1.2" stroke-dasharray="4 3" fill="none"/>
+    </svg>
+    <span class="map-river-label">رود ارس (مرز)</span>`;
+  inner.appendChild(river);
+
+  // zone outlines
+  for (const [z, spec] of Object.entries(MAP_ZONE_STYLE)) {
     const div = document.createElement("div");
     div.className = "map-zone";
-    const base = { north: [8, 6], center: [24, 30], south: [46, 62], gate: [6, 42] }[z];
-    div.style.cssText = `left:${base[0]}%;top:${base[1]}%;width:44%;height:34%;`;
-    div.innerHTML = `<span class="zone-label">${esc(ZONE_STYLE[z].label)}</span>`;
+    div.style.cssText = `left:${spec.box[0]}%;top:${spec.box[1]}%;width:${spec.box[2]}%;height:${spec.box[3]}%;`;
+    div.innerHTML = `<span class="zone-label">${esc(spec.label)}</span>`;
     inner.appendChild(div);
   }
 
-  // pins
-  const placed = {};
-  items.forEach((item, idx) => {
-    const z = zoneOf(item.location) || "center";
-    const base = ZONE_POS[z] || ZONE_POS.center;
-    const spread = placed[z] || 0;
-    placed[z] = spread + 1;
-    const x = Math.min(88, Math.max(10, base.x + (spread - 1) * 13 + ((idx % 3) - 1) * 6));
-    const y = Math.min(88, Math.max(8, base.y + (spread % 2) * 12 - 4));
-
-    const icon = item.category === "geosites" ? "⛰"
-      : item.category === "routes" ? "🥾"
-      : item.category === "facilities" ? "🅿"
-      : "🏞";
+  // pins — table-driven, so the whole canvas is used
+  items.forEach((item) => {
+    const pos = MAP_LAYOUT[item.id];
+    if (!pos) return;
     const color =
       item.category === "geosites" ? "var(--ochre)" :
       item.category === "routes" ? "var(--slate-500)" :
       item.category === "facilities" ? "var(--basalt-blue)" : "var(--moss-deep)";
+    const pinIcon = itemIconName(item);
 
     const pin = document.createElement("div");
     pin.className = "map-pin";
-    pin.style.left = x + "%";
-    pin.style.top = y + "%";
+    pin.setAttribute("tabindex", "0");
+    pin.setAttribute("role", "button");
+    pin.setAttribute("aria-label", item.title + " — " + (item.category_fa || ""));
+    pin.style.left = pos.x + "%";
+    pin.style.top = pos.y + "%";
     pin.innerHTML = `
-      <div class="dot" style="background:${color};">${icon}</div>
+      <div class="dot" style="background:${color};">${iconSVG(pinIcon, 15)}</div>
       <div class="pin-label">${esc(item.title)}</div>
       <div class="tip">
         <b>${esc(item.title)}</b>
         <div style="margin-bottom:4px;color:var(--ink-soft);">${esc(item.category_fa)}</div>
-        ${item.location ? `<div style="font-size:11px;color:var(--moss-deep);">📍 ${esc(item.location)}</div>` : ""}
-        ${item.excerpt ? `<div style="font-size:11px;margin-top:4px;">${esc(item.excerpt.slice(0, 90))}…</div>` : ""}
+        ${item.excerpt ? `<div style="font-size:11px;margin-top:4px;">${esc(item.excerpt.slice(0, 90))}...</div>` : ""}
         <div style="margin-top:6px;"><a class="link-open" href="#" data-id="${esc(item.id)}">مشاهده جزئیات</a></div>
       </div>`;
     inner.appendChild(pin);
@@ -258,6 +298,16 @@ function mapCard(items, { onOpen = null } = {}) {
     pin.querySelector(".dot").addEventListener("click", () => {
       if (onOpen) onOpen(item.id); else openDetail(item.id);
     });
+    // keyboard: Enter/Space opens details (parity with the click behaviour)
+    pin.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (onOpen) onOpen(item.id); else openDetail(item.id);
+      }
+    });
+    // reveal the tip when the pin is keyboard-focused (visible focus, no scroll)
+    pin.addEventListener("focus", () => pin.classList.add("tip-open"));
+    pin.addEventListener("blur", () => pin.classList.remove("tip-open"));
   });
 
   // legend
@@ -268,7 +318,8 @@ function mapCard(items, { onOpen = null } = {}) {
     <span class="lg"><span class="sw" style="background:var(--moss-deep)"></span>جاذبه گردشگری</span>
     <span class="lg"><span class="sw" style="background:var(--slate-500)"></span>مسیر بازدید</span>
     <span class="lg"><span class="sw" style="background:var(--basalt-blue)"></span>امکانات</span>
-    <span style="margin-inline-start:auto;font-size:11px;opacity:.75;">چیدمان شماتیک — موقعیت‌ها بر اساس توصیفات متنی در پایگاه دانش</span>`;
+    <span class="lg-river"><span style="display:inline-block;width:18px;height:3px;border-radius:3px;background:var(--basalt-blue);"></span>رود ارس</span>
+    <span style="margin-inline-start:auto;font-size:11px;opacity:.75;">چیدمان شماتیک بر اساس توصیفات جغرافیایی پایگاه دانش</span>`;
   root.appendChild(legend);
   return root;
 }
@@ -338,8 +389,8 @@ function recommendPanel(profile, onApply) {
   const panel = document.createElement("div");
   panel.className = "rec-panel";
   panel.innerHTML = `
-    <h3>✨ توصیه‌های هوشمند</h3>
-    <p class="rec-note">بر اساس سلیقه، سختی و زمان‌بندی شما از پایگاه دانش ژئوپارک پیشنهاد می‌دهیم.</p>
+    <h3>${iconBadge("ai", { size: 18, cls: "head-ic" })} <span>توصیه‌های هوشمند</span></h3>
+    <p class="rec-note">بر اساس سلیقه، سختی و زمانبندی شما از پایگاه دانش ژئوپارک پیشنهاد میدهیم.</p>
     <div class="filter-group">
       <label>موضوع مورد علاقه</label>
       <div class="filter-pills" data-name="interest"></div>
@@ -381,14 +432,13 @@ async function renderRecommendations(panel, profile) {
       return;
     }
     for (const r of recs) {
+      const place = itemIconName(r.item);                 // specific place icon (آبشار، کلیسا، تراورتن، مرکز ...)
+      const t = ICON_TONE[place] || ICON_TONE.geology;
       const row = document.createElement("div");
       row.className = "rec-item";
       row.innerHTML = `
-        <div class="rec-icon" data-cat="${esc(r.item.category)}" style="background:${
-          r.item.category === "geosites" ? "rgba(201,138,61,.15)" :
-          r.item.category === "routes" ? "rgba(109,97,79,.15)" :
-          r.item.category === "facilities" ? "rgba(74,85,104,.15)" : "rgba(125,143,106,.15)"
-        };">${esc(CAT_ICON[r.item.category] || "•")}</div>
+        <div class="rec-icon"
+             style="color:${t.fg};background:${t.bg};${t.g ? "background-image:" + t.g + ";" : ""}">${iconSVG(place, 22)}</div>
         <div class="rec-meta">
           <div class="t">${esc(r.item.title)}</div>
           <div class="why">${esc((r.reasons || [])[0] || "")}</div>

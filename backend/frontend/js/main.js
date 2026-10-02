@@ -78,24 +78,30 @@ function renderCatalog() {
    - faq -> the FAQ list
    No page reload; the view opens on top and closes with ✕ / Esc. */
 function renderStats() {
-  const host = document.getElementById("hero-stats");
-  host.replaceChildren();
-  if (state.cats.length) {
-    for (const c of state.cats) {
-      const chip = document.createElement("button");
-      chip.type = "button";
-      chip.className = "stat-chip";
-      chip.dataset.category = c.key;
-      chip.textContent = c.label_fa;
-      chip.addEventListener("click", () => openCategoryTab(c.key));
-      host.appendChild(chip);
-    }
-  }
+ const host = document.getElementById("hero-stats");
+ host.replaceChildren();
+ if (state.cats.length) {
+   for (const c of state.cats) {
+     const chip = document.createElement("button");
+     chip.type = "button";
+     chip.className = "stat-chip";
+     chip.dataset.category = c.key;
+     // Subject-mapped icon inside the chip (per-category tone via CSS [data-category]).
+     chip.innerHTML =
+       `<span class="chip-ic" aria-hidden="true">${iconSVG(catIconName(c.key), 17)}</span>` +
+       `<span>${esc(c.label_fa)}</span>`;
+     chip.addEventListener("click", () => openCategoryTab(c.key));
+     host.appendChild(chip);
+   }
+ }
 }
 
-function openCategoryTab(key) {
+ function openCategoryTab(key) {
   const label = state.cats.find((c) => c.key === key);
   const title = label ? label.label_fa : key;
+  // sync the pressed state of the category chips so the active styling is live
+  document.querySelectorAll(".stat-chip").forEach((chip) =>
+    chip.setAttribute("aria-pressed", chip.dataset.category === key ? "true" : "false"));
   const host = document.getElementById("tab-view");
   host.replaceChildren();
 
@@ -146,6 +152,8 @@ function closeCategoryTab() {
   const host = document.getElementById("tab-view");
   host.hidden = true;
   document.body.style.overflow = "";
+  document.querySelectorAll(".stat-chip[aria-pressed]").forEach((c) =>
+    c.removeAttribute("aria-pressed"));
 }
 
 document.addEventListener("keydown", (e) => {
@@ -212,12 +220,83 @@ async function boot() {
 
   chatComponent();
 
+  // Decorate section headers + hero with the professional SVG icon system
+  decorateIconHeaders();
+
+  // Init the motion / scroll-reveal system (respects prefers-reduced-motion)
+  initMotion();
+
   document.getElementById("chat-fab").addEventListener("click", () => {
     document.getElementById("chat-section").scrollIntoView({ behavior: "smooth" });
   });
 
   // health check surfaced quietly
   API.health().catch((err) => console.warn("backend not reachable:", err.message));
+}
+
+/* ---------- Professional SVG icon decoration on section headers ----------
+   Adds a meaning-mapped icon badge to each <h2 data-icon> section header,
+   using the shared icon system in icons.js so one set is used everywhere. */
+function decorateIconHeaders() {
+  const MAP = [
+    ["#explore h2", "explore"],
+    ["#map-section h2", "map"],
+    ["#timeline-section h2", "timeline"],
+    ["#faq-section h2", "faq"],
+    ["#chat-section h2", "ai"],
+  ];
+  for (const [sel, icon] of MAP) {
+    const h = document.querySelector(sel);
+    if (!h || h.querySelector(".icon-badge")) continue;
+    const wrap = document.createElement("span");
+    wrap.className = "h-icon";
+    wrap.innerHTML = iconBadge(icon, { size: 24, cls: "head-badge" });
+    h.insertBefore(wrap, h.firstChild); // RTL: leading side of the title
+  }
+}
+
+/* ---------- Motion / scroll-reveal system ----------
+   Fade + slide cards/sections in as they enter the viewport; gentle float on
+   the hero brand mark; smooth is performance-friendly (transform/opacity only)
+   and fully disabled under prefers-reduced-motion. */
+function initMotion() {
+  const reduce =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) {
+    // Mark so CSS can neutralize animations, but still make content visible.
+    document.documentElement.classList.add("reduce-motion");
+    return;
+  }
+
+  // Make the hero brand mark gently float (subtle, premium).
+  document.querySelectorAll(".brand-mark").forEach((el) => {
+    el.classList.add("float");
+  });
+
+  // Reveal elements as they scroll into view.
+  const revealSel =
+    ".card, .section-head, .map-card, .timeline, .faq-list, .rec-item";
+
+  // Only hide-then-reveal when we can actually reveal them. On browsers
+  // without IntersectionObserver, leave everything visible (no .reveal).
+  if (!("IntersectionObserver" in window)) return;
+
+  const targets = document.querySelectorAll(revealSel);
+  targets.forEach((el) => el.classList.add("reveal"));
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          e.target.classList.add("in");
+          io.unobserve(e.target);
+        }
+      }
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+  );
+  targets.forEach((el) => io.observe(el));
 }
 
 let recPanel = null;

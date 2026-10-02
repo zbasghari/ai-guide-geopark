@@ -3,9 +3,10 @@ from pathlib import Path
 import re
 import os
 import hashlib
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import uvicorn
@@ -188,11 +189,13 @@ def _item_summary(item: KnowledgeItem) -> dict:
                 break
     excerpt = _clean_excerpt(excerpt_body, 100000)
 
+    meta = item.metadata or {}
     return {
         "id": item.id,
         "title": item.title,
         "category": item.category,
         "category_fa": CATEGORY_LABELS_FA.get(item.category, item.category),
+        "attraction_category_fa": meta.get("attraction_category_fa", ""),
         "tags": item.tags,
         "file_path": item.file_path,
         "excerpt": excerpt,
@@ -202,6 +205,13 @@ def _item_summary(item: KnowledgeItem) -> dict:
         "amenities": amenities[:8],
         "best_time": _first_line(_section_named(sections, "بهترین زمان")),
         "safety_notes": _extract_bullets(_section_named(sections, "نکات ایمنی"))[:8],
+        # Image / visual data (present only when the item carries image frontmatter)
+        "image": meta.get("image", ""),
+        "image_thumb": meta.get("image_thumb", ""),
+        "image_source": meta.get("image_source", ""),
+        "image_license": meta.get("image_license", ""),
+        "gallery": meta.get("gallery", []),
+        "gallery_thumbs": meta.get("gallery_thumbs", []),
     }
 
 
@@ -327,15 +337,39 @@ app.add_middleware(
 )
 
 
-# Always serve the frontend fresh — a stale cached JS build disables every
-# button (this was the "buttons don't work" report). No-cache forces the
-# browser to revalidate on each load.
+# --- Performance middleware -------------------------------------------------
+# GZip: compresses text responses (HTML/CSS/JS/JSON). ~100KB of JS+CSS+HTML
+# ships as ~30KB; API JSON is also compressed.
+app.add_middleware(GZipMiddleware, minimum_size=1024, compresslevel=6)
+
+# Cache-Control: previously EVERY response was no-cache, so repeat visitors
+# re-downloaded all JS/CSS (and any cached image). Now:
+#   - static assets under /images/ (webp/jpg/png/gif/svg)  -> long-lived, immutable
+#     (files are renamed/hashed by content change; the frontend rewrites KB refs,
+#      and JS/CSS are revalidated so a new build is never stuck)
+#   - /css/ and /js/                                        -> short revalidation
+#   - everything else (HTML, /api/*)                       -> no-cache (fresh content)
+_IMMUTABLE_EXTS = {".webp", ".jpg", ".jpeg", ".png", ".gif", ".svg", ".ico", ".avif", ".woff", ".woff2"}
+_REVALIDATE_EXTS = {".js", ".css"}
+
+
 @app.middleware("http")
-async def disable_client_caching(request, call_next):
+async def set_cache_headers(request: Request, call_next):
     response = await call_next(request)
-    response.headers.setdefault("Cache-Control", "no-cache, must-revalidate, max-age=0")
-    response.headers.setdefault("Pragma", "no-cache")
-    response.headers.setdefault("Expires", "0")
+    path = request.url.path
+    ext = os.path.splitext(path)[1].lower()
+    if ext in _IMMUTABLE_EXTS:
+        # Long cache for static media, but revalidate (not immutable): image file
+        # names do not change when content is updated, so an immutable cache could
+        # serve stale photos. 30-day max-age keeps repeat loads fast; revalidation
+        # (etag/304) catches genuine updates.
+        response.headers["Cache-Control"] = "public, max-age=2592000"
+    elif ext in _REVALIDATE_EXTS:
+        response.headers["Cache-Control"] = "public, max-age=3600"
+    else:
+        response.headers.setdefault("Cache-Control", "no-cache, must-revalidate")
+        response.headers.setdefault("Pragma", "no-cache")
+        response.headers.setdefault("Expires", "0")
     return response
 
 

@@ -5,36 +5,37 @@
    ============================================================ */
 
 :root {
-  /* Earth-tone palette */
-  --basalt-900: #16130f;
-  --basalt-800: #211c16;
-  --basalt-700: #2e2820;
-  --basalt-600: #3d352a;
-  --slate-500:  #6b6257;
-  --slate-400:  #8c8175;
-  --sand-200:   #d8cfc2;
-  --sand-100:   #efe9df;
-  --paper:      #f5f1e8;
+  /* Bright, nature-inspired palette: clear sky + fresh meadow + warm sun */
+  --basalt-900: #15221d;
+  --basalt-800: #1f3028;
+  --basalt-700: #2c4436;
+  --basalt-600: #3a5a45;
+  --slate-500:  #5f7a68;
+  --slate-400:  #84a28c;
+  --sand-200:   #dcebd8;
+  --sand-100:   #eef6e8;
+  --paper:      #f5faf3;
 
-  --ochre:      #c98a3d;   /* accent: ochre / iron oxide */
-  --ochre-soft: #e0a85f;
-  --moss:       #7d8f6a;   /* accent: moss / living rock */
-  --moss-deep:  #4c5d3e;
-  --amber:      #e0b45c;
-  --basalt-blue:#4a5568;
+  --ochre:      #e8862e;   /* accent: warm sun / autumn */
+  --ochre-soft: #f4a94e;
+  --moss:       #4caf6d;   /* accent: fresh leaf / meadow */
+  --moss-deep:  #2f7d4f;
+  --amber:      #f2c14e;
+  --sky:        #4fa6d8;   /* accent: clear sky */
+  --basalt-blue:#3f7fbf;
 
-  --ink:        #1d1811;
-  --ink-soft:   #443d31;
-  --line:       rgba(201, 138, 61, 0.30);
-  --line-soft:  rgba(255, 255, 255, 0.55);
+  --ink:        #182218;
+  --ink-soft:   #41503f;
+  --line:       rgba(232, 134, 46, 0.34);
+  --line-soft:  rgba(255, 255, 255, 0.60);
 
-  --glass:      rgba(253, 251, 246, 0.96);
-  --glass-strong: rgba(253, 251, 246, 0.97);
-  --glass-brd:  rgba(255, 255, 255, 0.85);
+  --glass:      rgba(255, 255, 255, 0.86);
+  --glass-strong: rgba(255, 255, 255, 0.94);
+  --glass-brd:  rgba(255, 255, 255, 0.90);
 
-  --shadow-sm: 0 1px 2px rgba(22, 19, 15, 0.08);
-  --shadow-md: 0 6px 18px -6px rgba(22, 19, 15, 0.18);
-  --shadow-lg: 0 18px 44px -14px rgba(22, 19, 15, 0.30);
+  --shadow-sm: 0 1px 2px rgba(21, 34, 29, 0.08);
+  --shadow-md: 0 6px 18px -6px rgba(21, 34, 29, 0.16);
+  --shadow-lg: 0 18px 44px -14px rgba(21, 34, 29, 0.26);
 
   --radius: 14px;
   --radius-lg: 20px;
@@ -68,10 +69,10 @@ h1, h2, h3, h4 { font-family: "B Nazanin", "B Nazanin 2", Tahoma, "Times New Rom
   position: absolute;
   left: 0; right: 0;
 }
-.stratum.s1 { top: 0; height: 200px; background: linear-gradient(180deg, #efe6d3 0%, #e6d7bd 100%); }
-.stratum.s2 { top: 195px; height: 130px; background: linear-gradient(180deg, #e0cba5 0%, #d4bc93 100%); }
-.stratum.s3 { top: 320px; height: 110px; background: linear-gradient(180deg, #cdb489 0%, #c2a87f 100%); }
-.stratum.s4 { top: 425px; height: 135px; background: linear-gradient(180deg, #b39a77 0%, var(--paper) 100%); }
+.stratum.s1 { top: 0; height: 200px; background: linear-gradient(180deg, #dcefff 0%, #c3e6f7 100%); }
+.stratum.s2 { top: 195px; height: 130px; background: linear-gradient(180deg, #c9f0dd 0%, #a9e6c4 100%); }
+.stratum.s3 { top: 320px; height: 110px; background: linear-gradient(180deg, #bfe9b6 0%, #a5dd97 100%); }
+.stratum.s4 { top: 425px; height: 135px; background: linear-gradient(180deg, #c7e7a0 0%, var(--paper) 100%); }
 /* wavy contact lines between strata */
 .stratum::after {
   content: "";
@@ -85,7 +86,7 @@ h1, h2, h3, h4 { font-family: "B Nazanin", "B Nazanin 2", Tahoma, "Times New Rom
   inset: 0;
   background-image:
     radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-    radial-gradient(rgba(22,19,15,0.05) 1px, transparent 1.4px);
+    radial-gradient(rgba(21,34,29,0.04) 1px, transparent 1.4px);
   background-size: 7px 7px, 13px 13px;
   background-position: 0 0, 4px 6px;
   opacity: 0.5;
@@ -186,7 +187,7 @@ h1, h2, h3, h4 { font-family: "B Nazanin", "B Nazanin 2", Tahoma, "Times New Rom
 /* ---------- Layout ---------- */
 main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
 
-.hero { padding: 70px 0 26px; }
+.hero { position: relative; padding: 70px 0 26px; }
 .hero-frame {
   text-align: center;
   max-width: 720px;
@@ -195,7 +196,7 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
 .hero h1 {
   font-size: clamp(30px, 5vw, 52px);
   margin: 0 0 12px;
-  background: linear-gradient(180deg, var(--ink) 40%, var(--ochre) 100%);
+  background: linear-gradient(180deg, var(--basalt-800) 35%, var(--moss-deep) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -208,10 +209,13 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
    Preserves the existing pill visual; adds pointer/hover/focus/active + pressed state. */
 .stat-chip {
   appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background: var(--glass-strong);
   border: 1px solid var(--glass-brd);
   border-radius: 999px;
-  padding: 8px 18px;
+  padding: 8px 16px 8px 18px;
   font-size: 15px;
   font-family: inherit;
   color: var(--ink-soft);
@@ -220,6 +224,23 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
   transition: background .18s ease, color .18s ease, border-color .18s ease,
               box-shadow .18s ease, transform .12s ease;
 }
+/* per-category toned icon inside the chip (a soft colored disc behind the glyph) */
+.stat-chip .chip-ic {
+  display: grid; place-items: center;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  flex: 0 0 30px;
+  transition: background .18s ease, color .18s ease;
+}
+.stat-chip[data-category="geosites"]    .chip-ic { background: rgba(201,138,61,.16);  color: var(--ochre); }
+.stat-chip[data-category="attractions"]  .chip-ic { background: rgba(76,175,109,.16);  color: var(--moss-deep); }
+.stat-chip[data-category="routes"]       .chip-ic { background: rgba(95,122,104,.16); color: var(--slate-500); }
+.stat-chip[data-category="facilities"]   .chip-ic { background: rgba(63,127,191,.16); color: var(--basalt-blue); }
+.stat-chip[data-category="rules"]        .chip-ic { background: rgba(138,63,63,.14);  color: #8a3f3f; }
+.stat-chip[data-category="faq"]          .chip-ic { background: rgba(95,122,104,.16); color: var(--slate-500); }
+.stat-chip:hover .chip-ic { transform: scale(1.06); }
+/* active chip: white icon on a white disc for contrast against the gradient fill */
+.stat-chip[aria-pressed="true"] .chip-ic { background: rgba(255,255,255,.24); color: #ffffff; }
 .stat-chip b { color: var(--moss-deep); font-weight: 700; }
 .stat-chip:hover {
   background: rgba(201,138,61,0.10);
@@ -235,13 +256,13 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
 }
 /* Pressed/active category filter */
 .stat-chip[aria-pressed="true"] {
-  background: var(--ochre);
-  border-color: var(--ochre);
-  color: var(--paper);
+  background: linear-gradient(135deg, var(--moss), var(--sky));
+  border-color: var(--moss);
+  color: #ffffff;
   box-shadow: var(--shadow-md);
 }
-.stat-chip[aria-pressed="true"] b { color: var(--paper); }
-.stat-chip[aria-pressed="true"]:hover { background: var(--ochre-soft, #d99a4d); border-color: var(--ochre-soft, #d99a4d); }
+.stat-chip[aria-pressed="true"] b { color: #ffffff; }
+.stat-chip[aria-pressed="true"]:hover { background: linear-gradient(135deg, var(--moss-deep), var(--basalt-blue)); border-color: var(--moss-deep); }
 
 .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
@@ -261,18 +282,19 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
 }
 .btn:active { transform: translateY(1px) scale(0.99); }
 .btn-primary {
-  background: linear-gradient(135deg, var(--ochre) 0%, var(--amber) 100%);
-  color: #241d12;
-  font-weight: 600;
-  box-shadow: 0 8px 20px -8px rgba(201,138,61,0.7);
+  background: linear-gradient(135deg, var(--moss) 0%, var(--sky) 100%);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 8px 20px -8px rgba(79,166,216,0.75);
 }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -8px rgba(201,138,61,0.75); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -8px rgba(47,125,79,0.7); }
 .btn-ghost {
-  background: rgba(255,255,255,0.45);
-  border-color: var(--line);
-  color: var(--ink);
+  background: rgba(255,255,255,0.7);
+  border-color: var(--moss);
+  color: var(--basalt-blue);
+  font-weight: 600;
 }
-.btn-ghost:hover { border-color: var(--ochre); background: rgba(201,138,61,0.10); transform: translateY(-2px); }
+.btn-ghost:hover { border-color: var(--moss-deep); background: rgba(76,175,109,0.14); color: var(--moss-deep); transform: translateY(-2px); }
 .btn-small { font-size: 14px; padding: 7px 16px; }
 
 /* ---------- Sections ---------- */
@@ -311,11 +333,12 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
   transition: all 0.18s ease;
   font-family: inherit;
 }
-.pill:hover { border-color: var(--ochre); color: var(--ink); transform: translateY(-1px); }
+.pill:hover { border-color: var(--moss); color: var(--ink); transform: translateY(-1px); background: rgba(76,175,109,0.10); }
 .pill.active {
-  background: var(--ink);
-  color: var(--sand-100);
-  border-color: var(--ink);
+  background: linear-gradient(135deg, var(--moss), var(--sky));
+  color: #ffffff;
+  border-color: var(--moss);
+  box-shadow: 0 4px 12px -4px rgba(47,125,79,0.5);
 }
 .pill .count { opacity: 0.6; font-size: 13px; margin-inline-start: 4px; }
 
@@ -402,7 +425,15 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
   margin-bottom: 10px;
 }
 .card-title { font-size: 18px; margin: 0 0 8px; line-height: 1.7; }
-.card-excerpt { font-size: 15px; color: var(--ink-soft); margin: 0 0 12px; line-height: 1.9; }
+/* Card shows a short 2-line teaser; the full text lives in the detail modal. */
+.card-excerpt {
+  font-size: 15px; color: var(--ink-soft); margin: 0 0 12px; line-height: 1.9;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-excerpt:hover { color: var(--ink); }
 .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 .tag {
   font-size: 13px;
@@ -472,6 +503,18 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
   padding: 0 8px;
   border-radius: 999px;
   color: var(--ink-soft);
+}
+/* schematic river + border backdrop behind the pins */
+.map-river { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.map-river svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.map-river-label {
+  position: absolute;
+  top: 26%; right: 4%;
+  font-size: 12px; font-weight: 600;
+  color: var(--basalt-blue);
+  background: rgba(255,255,255,0.6);
+  padding: 2px 10px; border-radius: 999px;
+  border: 1px solid rgba(63,127,191,0.3);
 }
 .map-pin {
   position: absolute;
@@ -707,13 +750,33 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
 .modal-card {
   width: min(680px, 100%);
   max-height: 84vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   position: relative;
 }
+/* Fixed header strip INSIDE the card: the close button lives here, so it
+   stays pinned to the top of the modal while the body scrolls beneath it. */
+.modal-card > .modal-bar {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--glass-strong);
+  border-bottom: 1px solid var(--glass-brd);
+}
+/* scrollable body holds all the media/content */
+.modal-card > .modal-body { overflow-y: auto; flex: 1 1 auto; }
+.modal-bar-label {
+  font-size: 15px; font-weight: 600; color: var(--ink-soft);
+  letter-spacing: 0.01em;
+}
 .modal-close {
-  position: absolute;
-  top: 12px; left: 12px;
-  z-index: 3;
+  position: static;
+  z-index: 4;
   width: 34px; height: 34px;
   border-radius: 50%;
   border: 1px solid var(--glass-brd);
@@ -722,8 +785,11 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
   font-size: 17px;
   color: var(--ink-soft);
   display: grid; place-items: center;
+  margin-inline-start: auto;   /* pin to the trailing edge (top-left in RTL) */
+  transition: color .18s, border-color .18s, background .18s, transform .18s;
 }
-.modal-close:hover { color: var(--ink); border-color: var(--ochre); }
+.modal-close:hover { color: var(--ink); border-color: var(--ochre); background: rgba(232,134,46,0.12); transform: scale(1.06); }
+.modal-close:focus-visible { outline: none; border-color: var(--ochre); box-shadow: 0 0 0 3px rgba(232,134,46,0.30); }
 .modal-body h4 { font-size: 16px; color: var(--ink-soft); margin: 14px 0 6px; }
 .modal-body p { font-size: 15px; color: var(--ink); margin: 0 0 8px; line-height: 2; }
 .modal-body ul { margin: 0; padding-inline-start: 20px; font-size: 15px; color: var(--ink); }
@@ -858,3 +924,192 @@ main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
 ::-webkit-scrollbar { width: 9px; height: 9px; }
 ::-webkit-scrollbar-thumb { background: rgba(109,97,79,0.4); border-radius: 99px; }
 ::-webkit-scrollbar-track { background: transparent; }
+
+/* ============================================================
+   Icon system, image cards, gallery + motion  (premium pass)
+   ============================================================ */
+html { scroll-padding-top: 96px; }
+
+/* --- SVG icon primitives --- */
+.geo-icon { display: block; flex: 0 0 auto; }
+
+/* Colored / glass container that wraps an icon.
+   Tone comes from CSS vars set inline by iconBadge():
+     --ib-bg  soft glass fill      --ib-g  gradient fill      --ib-fg  icon color */
+.icon-badge {
+  display: inline-grid; place-items: center;
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--ib-bg, rgba(201,138,61,.14));
+  border: 1px solid var(--glass-brd);
+  box-shadow: var(--shadow-sm);
+  color: var(--ib-fg, var(--ink));
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.icon-badge:hover { transform: translateY(-1px) scale(1.03); box-shadow: var(--shadow-md); }
+/* gradient-fill variant (section headers + hero) */
+.icon-badge.head-badge {
+  width: 48px; height: 48px; border-radius: 13px;
+  background: var(--ib-g, var(--ib-bg));
+  border-color: transparent;
+  box-shadow: var(--shadow-md);
+}
+/* small badge inside the card category pill */
+.icon-badge.cat-ic { width: 20px; height: 20px; border-radius: 7px; box-shadow: none; }
+.card-cat .icon-badge.cat-ic { margin-inline-end: 1px; }
+/* rec-panel header badge */
+.icon-badge.head-ic { width: 30px; height: 30px; border-radius: 9px; }
+
+/* rec-list icon tile: a glass box tinted by category, holding a plain SVG */
+.rec-icon {
+  color: var(--ic-tint, var(--ink));
+  background: var(--ic-grad, rgba(201,138,61,.14));
+}
+
+/* section headers: icon badge leading the title */
+.h-icon { display: inline-flex; margin-inline-end: 10px; }
+.section-head h2 { display: inline-flex; align-items: center; }
+
+/* --- Image cards --- (Media Direction: card media = thumbnail, 16:9) */
+.card-media { position: relative; overflow: hidden; aspect-ratio: 16 / 9; background: var(--sand-100); }
+.card-media img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  background: var(--sand-100);
+  transition: transform .5s ease;
+}
+.card:hover .card-media img { transform: scale(1.05); }
+/* missing-image state: strata placeholder + place icon (never a fake photo) */
+.card-media.media-missing {
+  display: grid; place-items: center;
+  background: linear-gradient(160deg, #dcefff 0%, #c9f0dd 55%, #c7e7a0 100%);
+}
+.card-media.media-missing .missing-ic {
+  display: grid; place-items: center;
+  width: 56px; height: 56px; border-radius: 16px;
+  background: rgba(255,255,255,.6); color: var(--moss-deep);
+  box-shadow: var(--shadow-sm);
+}
+.card-media .media-badge {
+  position: absolute; top: 12px; inset-inline-start: 12px;
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(22,19,15,.58); color: #fff;
+  font-size: 12px; padding: 3px 11px; border-radius: 999px;
+  backdrop-filter: blur(4px);
+}
+.card-media .media-badge::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ochre-soft);
+}
+
+/* --- Modal media + gallery --- (Media Direction: hero = full image, 21:9) */
+.modal-media { position: relative; margin: -18px -22px 16px; overflow: hidden; aspect-ratio: 21 / 9; background: var(--sand-100); }
+.modal-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; display: block; cursor: zoom-in; }
+.modal-media .media-badge { top: 14px; inset-inline-start: 14px; }
+
+.media-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 4px 0 16px; }
+.media-thumb {
+  border: 0; padding: 0; margin: 0;
+  border-radius: 10px; overflow: hidden; cursor: zoom-in;
+  background: transparent; aspect-ratio: 4 / 3;
+  box-shadow: var(--shadow-sm);
+}
+.media-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
+.media-thumb:hover img { transform: scale(1.08); }
+.modal-body h4 { font-size: 15px; margin: 14px 0 8px; color: var(--ink-soft); }
+
+/* --- Lightbox --- */
+.lightbox {
+  position: fixed; inset: 0; z-index: 130;
+  display: grid; place-items: center;
+  background: rgba(22,19,15,.88); padding: 4%;
+  animation: lb-fade .25s ease;
+}
+.lightbox[hidden] { display: none; }
+.lightbox img {
+  max-width: 94%; max-height: 84%;
+  border-radius: 14px; box-shadow: var(--shadow-lg); background: #fff;
+  animation: lb-zoom .28s cubic-bezier(.2,.7,.3,1);
+}
+.lightbox-cap { position: absolute; bottom: 16px; left: 0; right: 0; text-align: center; color: #fff; font-size: 14px; opacity: .88; padding: 0 20px; }
+.lightbox-close {
+  position: absolute; top: 18px; inset-inline-end: 18px;
+  width: 42px; height: 42px; border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.3);
+  background: rgba(255,255,255,.12); color: #fff; font-size: 18px;
+  cursor: pointer; display: grid; place-items: center; transition: background .18s, transform .18s;
+}
+.lightbox-close:hover { background: rgba(255,255,255,.28); transform: scale(1.05); }
+
+/* --- Motion --- */
+@keyframes geo-card-in { from { opacity: 0; transform: translateY(16px) scale(.99); } to { opacity: 1; transform: none; } }
+@keyframes geo-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes geo-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@keyframes geo-spin360 { to { transform: rotate(360deg); } }
+@keyframes lb-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lb-zoom { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+
+/* scroll-reveal: hidden until observed into view, then a single gentle rise */
+.reveal { opacity: 0; }
+.reveal.in { animation: geo-card-in .55s cubic-bezier(.2,.7,.3,1) both; }
+
+/* subtle float for hero ornament + header brand mark */
+.float { animation: geo-float 5s ease-in-out infinite; }
+
+/* hero decorative ornament (a floating crystal / geology accent) */
+.hero-ornament {
+  position: absolute; top: -6px; inset-inline-end: 4%;
+  z-index: 1; pointer-events: none;
+  filter: drop-shadow(0 10px 18px rgba(22,19,15,.22));
+}
+.hero-ornament .orc-facet {
+  fill: rgba(201,138,61,.18);
+  stroke: var(--moss-deep); stroke-width: 1; stroke-linejoin: round;
+}
+.hero-ornament .orc-line {
+  fill: none; stroke: rgba(125,143,106,.75); stroke-width: 0.8; stroke-linecap: round;
+}
+@media (max-width: 720px) { .hero-ornament { display: none; } }
+
+/* rec-list icon tile variant (glass container holding a plain category SVG) */
+.glass-icon { display: grid; place-items: center; }
+.glass-icon .geo-icon { width: 22px; height: 22px; }
+
+/* loading shimmer skeleton */
+.skel { position: relative; overflow: hidden; background: var(--sand-100); border-radius: 12px; }
+.skel::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.65), transparent);
+  background-size: 200% 100%;
+  animation: geo-shimmer 1.4s infinite;
+}
+
+/* micro-interaction polish: buttons + chips respond with a soft press */
+.btn, .pill, .stat-chip { will-change: transform; }
+.btn:active { transform: translateY(0) scale(.98); }
+.chip-btn { transition: border-color .18s, background .18s, transform .18s, color .18s; }
+.chip-btn:active { transform: translateY(1px); }
+
+/* loading animation (geopark strata spinner) */
+.geo-loader {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 3px solid rgba(201,138,61,.25);
+  border-top-color: var(--ochre);
+  animation: geo-spin360 0.9s linear infinite;
+}
+/* centered loading placeholder that sits in a section host before data arrives */
+.sec-loading {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; min-height: 130px; padding: 24px;
+  color: var(--ink-soft); font-size: 14px;
+  text-align: center;
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .float, .skel::after, .geo-loader { animation: none !important; }
+}
+html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after { animation: none !important; transition: none !important; }
+html.reduce-motion .reveal { opacity: 1; transform: none; }

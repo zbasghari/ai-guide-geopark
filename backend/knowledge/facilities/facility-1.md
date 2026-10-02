@@ -3,6 +3,10 @@ title: "پارکینگ اصلی"
 id: "facility-1"
 category: "امکانات"
 tags: ["پارکینگ", "ماشین", "اتوبوس"]
+image: "images/attractions/parking_asli/parking_asli_1.webp"
+image_thumb: "images/attractions/parking_asli/parking_asli_1_thumb.webp"
+image_source: "عکاسی شخصی کاربر"
+image_license: "private"
 ---
 
 # پارکینگ اصلی
