@@ -1,74 +1,78 @@
-# PROJECT_HANDOFF — راهنمای هوشمند ژئوپارک ارس (Jolfa)
+# PROJECT_HANDOFF — Aras Geopark AI Guide (Jolfa)
 
-> این فایل **checkpoint** است. یک agent تازه این را بخواند و از همین‌جا ادامه دهد.
-> آخرین بهروزرسانی: 2026-10-02 (state verified on disk + browser قبل از commit).
-> مسیر پروژه: `C:\Users\violet\ai-guide-geopark`
-> GitHub: `zbasghari/ai-guide-geopark` (branch `main`)
+> This file is a **checkpoint**. A fresh agent should read it and resume from here.
+> Last updated: 2026-10-02 (state verified on disk + Chrome CDP + git sync).
 
----
+## 1) What exists (verified 2026-10-02)
 
-## ۰) وضعیت لحظه‌ای (verified 2026-10-02)
+- **Backend** (`backend/`): FastAPI, 27-item KB (~605 content lines), API endpoints
+  (knowledge / categories / recommend / timeline / faq / chat), static mount.
+- **Frontend** (`backend/frontend/`): vanilla JS (5 files, ~80KB) + CSS (~40KB) + HTML
+  (6.8KB). RTL, B Nazanin / Vazirmatn fonts.
+- **Images**: 154 WebP files (77 full @ ≤1600px + 77 thumbs @ 800px) = **24.1MB**,
+  all in `backend/frontend/images/attractions/<slug>/`. Every one of the 27 KB items
+  references an image (verified 0 missing, 0 orphaned, 0 unused paths).
+  `markaz/` (Visitor Center) added 2026-10-02.
+- **Design System**: `design-system/geopark-aras/MASTER.md` = source of truth.
+- **AI**: `ai_service.py` — Ollama first, OpenAI fallback (no Ollama on user's
+  machine; grounded fallback chat works).
 
-| مورد | وضعیت |
-|---|---|
-| سرور لوکال | ✅ `http://127.0.0.1:8000` — `/health` → **27 items**, provider `ollama` |
-| پایگاه دانش | ✅ ۲۷ آیتم (3 geosite, 18 attraction, 2 route, 2 facility, 1 rule, 1 faq) — همه با متن کوتاه‌شده + نگارشی‌شده |
-| تصاویر | ✅ ۱۹۳ فایل (full ~2000px + thumbnail 800px) در `backend/frontend/images/attractions/`؛ همه ۲۷ آیتم تصویردارند |
-| آیکون‌ها | ✅ سیستم SVG معناگون (`js/icons.js`) + آیکون اختصاصی مکان (`itemIconName`)؛ چیپ‌های دسته با آیکون |
-| نقشه | ✅ `MAP_LAYOUT` جدول‌محور (pخش پین‌ها روی کل بوم + خط رود ارس) + پین‌های قابلفوکوس با کیبورد |
-| مودال | ✅ دکمه بستن sticky/شناور (`.modal-bar` position:sticky) |
-| Design System | ✅ `design-system/geopark-aras/MASTER.md` (persisted via ui-ux-pro-max) — Source of Truth |
-| commit / push | ⏳ در حال انجام — این commit تغییرات کامل این session را ثبت می‌کند |
+## 2) What the user has asked for (all DONE + committed)
 
----
+1. **Tourism portal rework** — 27 items, 16 new attractions, image fields on all,
+   real per-item icons, schematic map with hand-tuned layout (MAP_LAYOUT table),
+   enriched section icons, animated CTA/chips/pills (moss→sky gradient), floating
+   modal close (`.modal-bar`), chip icons with `aria-pressed`, U+200C "منظرهگاه"
+   fix. ✅
+2. **7 new image sets** (manzaragah + masire_asane + masire_koohnavardi + parking_asli
+   + service_behdashti + ghavanine_bazdid + soalate_motadavel + markaz) copied,
+   enhanced, wired into KB frontmatter. ✅
+3. **Design System** persisted to `design-system/geopark-aras/MASTER.md`. ✅
+4. **Performance pass** (2026-10-02): JPEG→WebP (all 152 pre-existing + 2 new),
+   2000px→1600px, GZip middleware, smart cache-control (images long-cache, HTML/API
+   no-cache, JS/CSS versioned query), `defer` on all 5 scripts, removed unused
+   `doodle-icons/` (563KB) and `__manifest.json` (10KB).
+   **Result: initial page load transfer 51MB+ → ~0.85MB** (verified via CDP
+   ResourceTiming: 34 requests, 853KB total, all 26 card images + modal hero +
+   gallery load as .webp). ✅
 
-## ۱) تغییرات این session (روی دیسک)
+## 3) Git state (verified 2026-10-02)
 
-### Backend
-- `backend/config.py` — `openai_base_url` (OpenAI-compatible؛ DeepSeek/Groq/vLLM/LMStudio قابل اتصال)؛ `ai_provider` پیش‌فرض `ollama`.
-- `backend/ai_service.py` — `_call_openai` از `openai_base_url` استفاده می‌کند؛ fallback قطعی از KB وقتی provider در دسترس نیست.
-- `backend/main.py` — `_item_summary` فیلدهای تصویر را (image, image_thumb, image_source, image_license, gallery, gallery_thumbs, attraction_category_fa) به payload می‌دهد؛ `/health` شامل `build_id`.
+- Repo: `https://github.com/zbasghari/ai-guide-geopark` branch `main`
+- **Committed + pushed**: `ad404cf` "Tourism portal v2 + performance pass:
+  WebP images, GZip, smart cache" (404 files). Local == remote (0/0 ahead).
+- `http.postBuffer=524288000` is set locally; the earlier 51MB commit (82067b5) was
+  un-pushed and squashed away via `reset --soft`, so the pushed history contains
+  only the 24.1MB WebP tree (not the 49MB JPEG tree).
+- `.gitignore` updated: scratch `_*` files excluded.
 
-### Frontend (vanilla HTML/CSS/JS, RTL)
-- `js/icons.js` — مجموعهٔ SVG (geology/crystal, camera, route, building, shield, speech, pin, leaf, spark, compass, clock, magnifier, sliders) + آیکون اختصاصی مکان (waterfall, church, bridge, dam, tower, fortress, hammam, village, meadow, forest, river, trona, caravanserai, panorama, info, familyRoute, hikeRoute, parking, restroom). `itemIconName()` روی title+tags resolve می‌شود.
-- `js/cards.js` — `MAP_LAYOUT` table-driven (pخش جغرافیایی پین‌ها بر اساس متن KB) + خط رود ارس + پین‌های کلاوید-فوکوس (tabindex/role/aria-label + Enter/Space + tip on focus). کارت/مودال/نقشه از آیکون اختصاصی مکان استفاده می‌کنند.
-- `js/components.js` — مودال جزئیات با hero-media + گالری + lightbox + **دکمه بستن شناور** (sticky `.modal-bar`).
-- `js/main.js` — چیپ‌های دسته با آیکون (`.chip-ic`) + `aria-pressed` هنگام باز شدن تب؛ `closeCategoryTab` press را reset می‌کند.
-- `css/style.css` — پالت شاد طبیعت‌گرا (sky `#4fa6d8` / meadow `#4caf6d` / sun `#e8862e`) روی پس‌زمینهٔ `#f5faf3`؛ `:root` روشن، strata gradient روشن؛ `.icon-badge`, `.card-media` (16:9), `.modal-media` (21:9), `.media-gallery`, lightbox, motion, `prefers-reduced-motion`.
+## 4) To resume
 
-### Knowledge
-- `attraction-3..18.md` — ۱۶ فایل جدید جاذبه (برج دوزال، کلیساهای تاریخی، پل ضیاءالملک، پل آهنی، آبشار ماهاران، پارک ملی کنتال، مراکان، سد ارس، دشت گردیان، کلیسای چوپان، رود ارس، کاروانسرای خواجهنظر، کردشت/حمام/قلعه، اشتبین، منظرهگاه سراسرنمای قله).
-- همه فایل‌ها: متن **کوتاه** + **نگارشی‌شده** (نیم‌فاصلهٔ U+200C، حذف `هٔ` چسبیده، ترکیب‌های چسبیده مثل حاشیهرود/حفاظتشده/حیاتوحش/زمینشناسی/هشتضلعی/جنوبشرقی اصلاح شده).
-- ۶ آیتم قبلاً بی‌تصویر حالا تصویر + gallری دارند: route-1/2, facility-1/2, rule-1, faq-1.
+- Local server: `cd backend && uvicorn main:app --host 127.0.0.1 --port 8000`
+  (Python 3.13 at `C:/Users/violet/AppData/Local/Programs/Python/Python313`).
+- CDP Chrome: `"/c/Program Files/Google/Chrome/Application/chrome.exe"
+  --remote-debugging-port=9333 --user-data-dir=<fresh tmp dir>
+  --no-first-run --no-default-browser-check --remote-allow-origins=*
+  http://127.0.0.1:8000/`
+- **Railway** deploy: `arascostums-production.up.railway.app` is the customs agent;
+  this geopark project deploys the same way (root Dockerfile, `COPY backend/ ./`).
+  After pushing a new commit, trigger a Railway redeploy and confirm the new
+  `build_id` at `/health`.
+- Remaining open items from MASTER.md next-steps (if user requests):
+  React+Vite+Tailwind+daisyUI port (user-mandated stack), focus-ring token +
+  contrast audit, reduced-motion audit, Lighthouse run.
+- Any new image the user drops in `C:/Users/violet/Desktop/images`: convert to
+  WebP full (≤1600px, q84) + thumb (≤800px, q80) into `images/attractions/<slug>/`,
+  wire `image` / `image_thumb` / `gallery` into the matching KB frontmatter.
 
----
+## 5) Guardrails (user-mandated — do not break)
 
-## ۲) Source of Truth
-
-**`design-system/geopark-aras/MASTER.md`** — Design System کامل (رنگ، typo, spacing, card/surface, iconography, category interaction, motion, responsive, a11y, image/media direction, anti-patterns, next-phase work items). هر session بعدی اول این را بخواند.
-
----
-
-## ۳) Deploy
-- GitHub `zbasghari/ai-guide-geopark` + Railway، از طریق **Dockerfile** (ریشهٔ ریپو؛ `COPY backend/ ./backend/`، self-contained layout که knowledge/ و frontend/ داخل backend/ هستند).
-- `/health` → `build_id` برای تشخیص container قدیمی.
-- AI: برای چت زنده، `AI_PROVIDER=openai` + `OPENAI_API_KEY` + (اختیاری) `OPENAI_BASE_URL` (مثلاً DeepSeek) در env Railway؛ وگرنه fallback قطعی از KB.
-
----
-
-## ۴) کارهای باز (مرحله‌های بعدی، از MASTER.md)
-1. مهاجرت کامل آیکون‌های سربرگ‌های شش‌گانه + badgeهای مکان به `.icon-badge` (تکمیل)؛ تأیید اینکه جایی فقط `catIcon` نمانده.
-2. چیپ‌های دسته → تعامل تبی واقعی (aria-pressed / active gradient / بدون layout-shift) — انجام‌شده، نیاز به QA بصری.
-3. گسترش Media Direction روی سطوحی که هنوز `<img>` خام بدون aspect-ratio دارند.
-4. پین‌های نقشه: tip هنگام focus (باربرابر با hover) — انجام‌شده، نیاز به QA.
-5. توکن‌های focus-ring سراسری + ممیزی contrast جفت‌رنگ‌های جدید.
-6. ممیزی `prefers-reduced-motion` + fallback بدون IntersectionObserver.
-7. (اگر تأیید شود) ریفکتور به React + Vite + Tailwind + daisyUI + Originkit — MASTER.md همان Source of Truth؛ توکن‌ها ۱:۱ به theme Tailwind map می‌شوند.
-
----
-
-## ۵) Scratch (ignore شده، در deploy نیست)
-`_cdp_check.py`, `_enhance_imgs.py`, `_gen_kb.py`, `_shorten_kb.py`, `_verify_imgs.py`, `_icon_sheet.png`, `_server.log` — همه با `.gitignore` از ریپو حذف شدند.
-
-## ۶) `.agents/`
-پوشهٔ skill‌های محلی (`ui-ux-pro-max`, `brand`, `design`, `ui-styling`, `design-system`, `banner-design`, `slides`) — ۴٫۷MB، در ریپو نگه داشته شده تا Design System و process قابل تکرار باشد.
+- React+Vite+Tailwind+daisyUI+Originkit is the user's stack for future web UI;
+  current site is vanilla (rewrite only if user authorizes).
+- Persian B Nazanin + English Times New Roman; light theme #eef2f7; formal,
+  no-emoji tone; never "روی لپتاپ شما".
+- U+200C half-space on "منظرهگاه" (7 occurrences fixed; keep it).
+- "دره آفریده" does not exist — do not add.
+- No numbers on stat chips/buttons.
+- `openai_api_key` / `anthropic_api_key` are env vars (config.py defaults None);
+  **never commit a `.env`** (verified none staged).
