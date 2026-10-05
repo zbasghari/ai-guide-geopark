@@ -2,7 +2,7 @@
 title: "پارک ملی کنتال"
 id: "attraction-15"
 category: "جاذبه گردشگری"
-tags: ["پارک ملی", "حیاط وحش", "کوهستان", "مرز"]
+tags: ["پارک ملی", "حیات وحش", "کوهستان", "مرز"]
 attraction_category_fa: "طبیعی"
 image: "images/attractions/kantal/kantal_1.webp"
 image_thumb: "images/attractions/kantal/kantal_1_thumb.webp"

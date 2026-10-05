@@ -2,7 +2,7 @@
 title: "سد ارس"
 id: "attraction-17"
 category: "جاذبه گردشگری"
-tags: ["سد", "دریاچه", "مراس", "آزاد ارس"]
+tags: ["سد", "دریاچه", "مرزی", "آزاد ارس"]
 attraction_category_fa: "طبیعی"
 image: "images/attractions/aras_dam/aras_dam_1.webp"
 image_thumb: "images/attractions/aras_dam/aras_dam_1_thumb.webp"

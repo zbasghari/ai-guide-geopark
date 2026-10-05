@@ -2,7 +2,7 @@
 title: "کاروانسرای خواجه‌نظر"
 id: "attraction-5"
 category: "جاذبه گردشگری"
-tags: ["کاروانسرا", "صفوی", "تاریخی", "مراس"]
+tags: ["کاروانسرا", "صفوی", "تاریخی", "مرزی"]
 attraction_category_fa: "تاریخی"
 image: "images/attractions/khajeh_nazar/khajeh_nazar_1.webp"
 image_thumb: "images/attractions/khajeh_nazar/khajeh_nazar_1_thumb.webp"
